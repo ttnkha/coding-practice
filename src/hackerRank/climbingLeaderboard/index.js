@@ -40,7 +40,7 @@ function climbingLeaderboard(rankedScores, playerScores) {
     }
 
     // If no exact match, set the rank
-    if (rank === undefined) {
+    if (!rank) {
       rank = left; // The rank should be the position found in the sorted array
     }
 
