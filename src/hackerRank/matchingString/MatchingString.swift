@@ -18,3 +18,10 @@ func matchingStrings(stringList: [String], queries: [String]) -> [Int] {
     // For each query, append the corresponding count from the frequency map (or 0 if not found).
     return queries.map { frequencyMap[$0, default: 0] }
 }
+
+func matchingStringsV2(strings: [String], queries: [String]) -> [Int] {
+    let frequencyMap = strings.reduce(into: [String: Int]()) {
+        $0[$1, default: 0] += 1
+    }
+    return queries.map { frequencyMap[$0, default: 0] }
+}
