@@ -13,3 +13,10 @@ func lonelyInteger(numbers: [Int]) -> Int {
     // Find and return the number that has a frequency of 1 (the lonely integer)
     return frequencyMap.first { $0.value == 1 }!.key
 }
+
+func lonelyIntegerV2(a: [Int]) -> Int {
+    let frequencyMap = a.reduce(into: [Int: Int]()) {
+        $0[$1, default: 0] += 1
+    }
+    return frequencyMap.first(where: { $0.value == 1 })!.key
+}
