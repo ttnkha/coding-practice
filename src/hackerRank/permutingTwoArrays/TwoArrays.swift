@@ -10,3 +10,16 @@ func canPairSumGreaterThanK(k: Int, A: [Int], B: [Int]) -> String {
     }
     return "YES"
 }
+
+func twoArrays(k: Int, A: [Int], B: [Int]) -> String {
+    let sortedA = A.sorted()
+    let sortedB = B.sorted(by: >)
+    
+    for (numA, numB) in zip(sortedA, sortedB) {
+        if numA + numB < k {
+            return "NO"
+        }
+    }
+    
+    return "YES"
+}
