@@ -1,46 +1,79 @@
-func isValid(s: String) -> String {
-    // Frequency map of characters
-    var freq = Array(s).reduce(into: [Character: Int]()) { $0[$1, default: 0] += 1 }
+/// Validates if a string can be made valid by removing at most one character.
+/// A string is considered valid if all characters appear the same number of times.
+/// - Parameter s: Input string to validate
+/// - Returns: "YES" if string can be made valid, "NO" otherwise
+func isValid(_ s: String) -> String {
+    // Count frequency of each character
+    let characterFrequencies = s.reduce(into: [Character: Int]()) { dict, char in
+        dict[char, default: 0] += 1
+    }
     
-    // Extract frequency values into an array
-    var frequencies = Array(freq.values)
+    // Convert to array of frequencies for easier manipulation
+    var frequencies = Array(characterFrequencies.values)
     
-    // Flag to track if one frequency has been adjusted
-    var hasRemoved = false
+    // Find the most common frequency
+    let frequencyCount = frequencies.reduce(into: [Int: Int]()) { dict, freq in
+        dict[freq, default: 0] += 1
+    }
+    let mostCommonFrequency = frequencyCount.max(by: { $0.value < $1.value })!.key
     
-    // Iterate over the frequencies to check the validity conditions
+    // Track if we've already removed a character
+    var hasRemovedCharacter = false
+    
+    // Check each frequency against the most common one
     for i in 1..<frequencies.count {
-        let prevFreq = frequencies[i - 1]
-        if prevFreq == -1 {
-            continue
-        }
-        let currFreq = frequencies[i]
+        let currentFrequency = frequencies[i]
+        let difference = abs(mostCommonFrequency - currentFrequency)
         
-        let diff = abs(prevFreq - currFreq)
-        
-        // If frequencies are the same, no change needed
-        if diff == 0 {
+        // Skip if frequency matches the most common one
+        if difference == 0 {
             continue
         }
         
-        // If the difference is 1, and we haven't removed a frequency yet, adjust
-        if diff == 1 {
-            if hasRemoved { return "NO" }
-            frequencies[i] = prevFreq  // Adjust current frequency to match previous
-            hasRemoved = true
+        // If we've already removed a character, string can't be made valid
+        if hasRemovedCharacter {
+            return "NO"
+        }
+        
+        // Handle different cases for making the string valid
+        if difference == 1 {
+            // Can remove one occurrence of this character
+            frequencies[i] = mostCommonFrequency
+            hasRemovedCharacter = true
             continue
         }
         
-        // If a frequency is 1, we can remove this character
-        if currFreq == 1 {
-            frequencies[i] = -1  // Mark as removed
+        if currentFrequency == 1 {
+            // Can remove the single occurrence of this character
+            frequencies[i] = -1
+            hasRemovedCharacter = true
             continue
         }
         
-        // If none of the above conditions are met, the string is invalid
+        // If we reach here, the string can't be made valid
         return "NO"
     }
     
-    // If all checks pass, the string is valid
     return "YES"
+}
+
+func isValidV2(_ s: String) -> String {
+    // Get character frequencies
+    let freq = s.reduce(into: [:]) { $0[$1, default: 0] += 1 }
+    let freqs = Array(freq.values)
+    let set = Set(freqs)
+    
+    // If all frequencies are same or string has only one character
+    if set.count == 1 { return "YES" }
+    
+    // If more than 2 different frequencies, can't make valid
+    if set.count > 2 { return "NO" }
+    
+    // Get min and max frequencies and their counts
+    let min = freqs.min()!, max = freqs.max()!
+    let minCount = freqs.filter { $0 == min }.count
+    let maxCount = freqs.filter { $0 == max }.count
+    
+    // Valid if removing one char makes all frequencies equal
+    return (min == 1 && minCount == 1) || (max - min == 1 && maxCount == 1) ? "YES" : "NO"
 }
