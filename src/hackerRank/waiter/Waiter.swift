@@ -8,7 +8,7 @@ func waiter(number: [Int], q: Int) -> [Int] {
         if n <= 1 { return false }
         if n == 2 { return true }
         if n % 2 == 0 { return false }
-        for i in 3...Int(sqrt(Double(n))) where i * i <= n {
+        for i in 3..<n where i * i <= n {
             if n % i == 0 {
                 return false
             }
@@ -26,7 +26,7 @@ func waiter(number: [Int], q: Int) -> [Int] {
     }
     
     // Iterate over the number of rounds (q)
-    for _ in 0..<q {
+    for i in 0..<q {
         var newA: [Int] = []   // Plates that will stay in A
         var B: [Int] = []      // Plates divisible by the current prime
         
@@ -40,7 +40,7 @@ func waiter(number: [Int], q: Int) -> [Int] {
         }
         
         // Add the plates in B to the answer (in reversed order)
-        answers.append(contentsOf: B.reversed())
+        answers.append(contentsOf: i % 2 == 0 ? B : B.reversed())
         A = newA  // Update A with the remaining plates
         
         // Find the next prime number
@@ -48,7 +48,7 @@ func waiter(number: [Int], q: Int) -> [Int] {
     }
     
     // Add the remaining plates in A to the answer (in reversed order)
-    answers.append(contentsOf: A.reversed())
+    answers.append(contentsOf: q % 2 == 0 ? A.reversed() : A)
     
     return answers
 }
