@@ -6,8 +6,8 @@ func maxSubarray(numbers: [Int]) -> [Int] {
     guard !numbers.isEmpty else { return [0, 0] }
     
     // Initialize variables for Kadane's algorithm
-    var maxEndingHere = numbers[0]    // Best sum ending at current position
-    var maxSoFar = numbers[0]         // Best sum found so far
+    var maxEndingHere = 0    // Best sum ending at current position
+    var maxSoFar = 0         // Best sum found so far
     var maxSubsequence = 0            // Sum of all positive numbers
     
     // Process array starting from second element
