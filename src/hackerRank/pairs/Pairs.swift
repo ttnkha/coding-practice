@@ -27,3 +27,8 @@ func pairs(k: Int, arr: [Int]) -> Int {
     // Return the total number of valid pairs.
     return count
 }
+
+func pairsV2(k: Int, arr: [Int]) -> Int {
+    let frequencies = arr.reduce(into: [Int: Int]()) { $0[$1, default: 0] += 1 }
+    return arr.reduce(0) { $0 + frequencies[$1 + k, default: 0] }
+}
