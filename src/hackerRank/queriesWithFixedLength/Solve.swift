@@ -1,47 +1,39 @@
-/// Finds minimum value among maximums of sliding windows for each query
-/// - Parameters:
-///   - array: Input array of integers
-///   - windowSizes: Array of window sizes to analyze
-/// - Returns: Array of minimum values for each window size
-func solve(array: [Int], windowSizes: [Int]) -> [Int] {
-    let size = array.count
-    var results: [Int] = []
-    
-    // Process each window size
-    for windowSize in windowSizes {
-        // Skip if window is larger than array
-        if size < windowSize {
-            continue
-        }
-        
-        // Handle special cases
-        if size == windowSize {
-            results.append(array.max()!)
-            continue
-        }
+func solve(arr: [Int], queries: [Int]) -> [Int] {
+    return queries.map { windowSize in
+        // If windowSize = 1, return the minimum element in the array
         if windowSize == 1 {
-            results.append(array.min()!)
-            continue
+            return arr.min()!
         }
         
-        // Find max of first window
-        let firstMax = array[0..<windowSize].max()!
-        var windowMaxes = [firstMax]
+        // If windowSize equals the array size, return the maximum element in the array
+        if windowSize == arr.count {
+            return arr.max()!
+        }
         
-        // Slide window and calculate max for each position
-        for i in 1...(size - windowSize) {
-            if windowMaxes.last! == array[i - 1] {
-                // Previous max left the window, recalculate
-                windowMaxes.append(array[i..<(i + windowSize)].max()!)
+        // Find the maximum value in the first window of length 'windowSize'
+        var minOfMax = arr[..<windowSize].max()!
+        
+        // Array to store the maximum values of each sliding window
+        var maxInWindows = [minOfMax]
+        
+        // Iterate through all possible sliding windows of length 'windowSize'
+        for i in 1...(arr.count - windowSize) {
+            // Compute the maximum value of the current window
+            let currentMax = if maxInWindows.last! == arr[i - 1] {
+                // If the previous max value is removed, recalculate the max
+                arr[i..<(i + windowSize)].max()!
             } else {
-                // Compare current max with new element
-                windowMaxes.append(max(windowMaxes.last!, array[i + windowSize - 1]))
+                // Otherwise, take the maximum between the last max and the new element
+                max(maxInWindows.last!, arr[i + windowSize - 1])
             }
+            
+            // Update the minimum value found among all window maximums
+            minOfMax = min(minOfMax, currentMax)
+            
+            // Append the new max value to the maxInWindows array
+            maxInWindows.append(currentMax)
         }
         
-        // Add minimum of all window maximums
-        results.append(windowMaxes.min()!)
+        return minOfMax
     }
-    
-    return results
 }
