@@ -49,3 +49,30 @@ func noPrefix(words: [String]) -> Void {
     // If we get here, no prefix relationships were found
     print("GOOD SET")
 }
+
+func noPrefixV2(words: [String]) -> Void {
+    let n = words.count
+    
+    var index = Int.max
+    for i in 0..<n {
+        if i > index {
+            break
+        }
+        for j in (i+1)..<n {
+            if j > index {
+                break
+            }
+            if words[i].hasPrefix(words[j]) || words[j].hasPrefix(words[i]) {
+                index = min(index, max(i, j))
+                break
+            }
+        }
+    }
+    
+    if index == Int.max {
+        print("GOOD SET")
+    } else {
+        print("BAD SET")
+        print(words[index])
+    }
+}
