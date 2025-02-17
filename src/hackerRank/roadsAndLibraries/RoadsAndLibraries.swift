@@ -1,32 +1,33 @@
 class UnionFind {
-    private var parent: [Int]
+    private var root: [Int]
     private var components: Int
     
-    init(_ n: Int) {
-        parent = Array(repeating: -1, count: n)
+    init(_ n: Int, _ cities: [[Int]]) {
+        root = Array(0..<n)
         components = n
+        for road in cities {
+            insert(road[0] - 1, road[1] - 1)
+        }
     }
     
-    func find(_ x: Int) -> Int {
-        if parent[x] < 0 { return x }
-        parent[x] = find(parent[x])
-        return parent[x]
-    }
-    
-    func union(_ x: Int, _ y: Int) -> Bool {
-        var rootX = find(x)
-        var rootY = find(y)
+    private func insert(_ x: Int, _ y: Int) {
+        var rootX = findRoot(x)
+        var rootY = findRoot(y)
         
-        if rootX == rootY { return false }
+        if rootX == rootY { return }
         
-        if parent[rootX] > parent[rootY] {
+        if rootX > rootY {
             swap(&rootX, &rootY)
         }
         
-        parent[rootX] += parent[rootY]
-        parent[rootY] = rootX
+        root[rootY] = rootX
         components -= 1
-        return true
+    }
+    
+    func findRoot(_ x: Int) -> Int {
+        if root[x] == x { return x }
+        root[x] = findRoot(root[x])
+        return root[x]
     }
     
     func getComponent() -> Int {
@@ -35,15 +36,11 @@ class UnionFind {
 }
 
 func roadsAndLibraries(n: Int, c_lib: Int, c_road: Int, cities: [[Int]]) -> Int {
-    if c_road >= c_lib || cities.isEmpty {
-        return n * c_lib
+    if c_lib <= c_road || cities.isEmpty {
+        return c_lib * n
     }
     
-    let uf = UnionFind(n)
-    for city in cities {
-        uf.union(city[0] - 1, city[1] - 1)
-    }
-    let componentCount = uf.getComponent()
-
-    return componentCount * c_lib + (n - componentCount) * c_road
+    let uf = UnionFind(n, cities)
+    let components = uf.getComponent()
+    return components * c_lib + (n - components) * c_road
 }
