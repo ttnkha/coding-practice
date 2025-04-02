@@ -8,7 +8,7 @@ func weightedUniformStrings(s: String, queries: [Int]) -> [String] {
     
     for (index, char) in s.enumerated() {
         // Calculate weight: 'a'=1, 'b'=2, etc.
-        let weight = char.asciiValue! - Character("a").asciiValue! + 1
+        let weight = Int(char.asciiValue! - Character("a").asciiValue!) + 1
         // If character changes, update start of new uniform substring
         if char != characters[startIndex] {
             startIndex = index
