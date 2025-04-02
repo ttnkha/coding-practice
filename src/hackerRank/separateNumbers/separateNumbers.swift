@@ -1,10 +1,10 @@
 func separateNumbers(s: String) -> Void {
-    guard !s.isEmpty, s.first != "0" else { 
+    guard s.count > 1, s.first != "0" else {
         print("NO") 
         return 
     }
     
-    for len in 1...s.count/2 {
+    for len in 1...(s.count/2) {
         let first = String(s.prefix(len))
         var num = Int(first)!
         var test = first
